@@ -1,0 +1,11 @@
+<form id="registerForm" class="form-horizontal" ng-submit="registerSubmit()" role="form">
+	<h1>Register</h1><br>
+	<a href="#login">Login</a>
+	<label>E-mail</label>
+	<input type="email" maxlength="25" class="form-control" id="email" placeholder="Enter email" ng-model="mail" equired><br>
+	<label>Password</label>
+	<input type="password" maxlength="8" class="form-control" id="pwd" placeholder="Enter password" ng-model="password" required>
+	<button type="submit" class="btn btn-success">Submit</button>
+	<div id="error" ng-show="showError" class="alert alert-danger">{{error}}</div>
+	<div id="success" ng-show="showSuccess" class="alert alert-success">{{success}}</div>
+</form>
