@@ -74,3 +74,17 @@ section{
 	float: left;
 	margin: 5px 20px;
 }
+#upload .editError{/*Show edit errors*/
+	text-align: left;
+}
+#upload .selected{
+	background-color: #D9EDF7;
+}
+#upload .progress{
+	position: relative;
+	width: 100%;
+}
+#footer>p{
+	display: inline-block;
+	float: left;
+}

@@ -10,6 +10,7 @@ var info;
 	angular.module('userModule',[]);
 	angular.module('mapModule',[]);
 	angular.module('sectorModule',[]);
+	angular.module('uploadModule',[]);
 	angular.module('dataBaseModule',[]);
 	//Declare main module and add other modules into the main one
 	var mainApp=angular.module('mainApp',[
@@ -18,6 +19,7 @@ var info;
 		'dataBaseModule',
 		'mapModule',
 		'sectorModule',
+		'uploadModule',
 		'administratorModule',
 		'userModule',
 		'ngRoute'

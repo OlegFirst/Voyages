@@ -27,8 +27,8 @@
 	</section>
 	
 	<!-- Upload -->
-	<div class="container">
-	<button id="uploadModal" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#upload" style="display:none" ng-click="uploadClear()">Open Modal</button>
+	<div class="container" ng-controller="uploadController">
+	<button id="uploadModal" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#upload" style="display:none" ng-click="uploadStart()">Open Modal</button>
 	<div id="upload" class="modal fade" role="dialog">
 		<div class="modal-dialog modal-lg">
 			<!-- Modal content-->
@@ -41,17 +41,18 @@
 					<div class="form-group">
 						<input id="file" type="file" style="margin-bottom:10px;">
 						<div class="alert alert-danger" ng-show="fileError">Select file, please!</div>
-						<button type="button" class="btn btn-primary" ng-click="upload()">Read file</button>
+						<button type="button" class="btn btn-primary" ng-click="upload()" ng-disabled="uploadReadFile">Read file</button>
+						<br><div class="alert alert-info" ng-show="processingFile" style="margin-top: 10px;">File in process</div>
 					</div>
 					<div class="form-group">
 						<ul id="markerData">
 							<li class="content" ng-repeat="marker in markers">
-								<div>
-									<div class="number">{{$index+1}}</div>
-									<div>Name<input type="text" ng-model="marker.name" size="30"></div>
-									<div>Sector<input type="text" ng-model="marker.sector" size=2></div>
-									<div>Latitude<input type="text" ng-model="marker.lat" size=8></div>
-									<div>Longitude<input type="text" ng-model="marker.lng" size=8></div>
+								<div ng-class="marker.selected">
+									<div class="number">{{marker.number}}</div>
+									<div>Name<input type="text" ng-model="marker.name" size="30" required></div>
+									<div>Sector {{marker.sector}}</div>
+									<div>Latitude<input type="text" ng-model="marker.lat" size=8 ng-change="latLngChange($index)" required></div>
+									<div>Longitude<input type="text" ng-model="marker.lng" size=8 ng-change="latLngChange($index)" required></div>
 								</div>
 								<div class="remove" ng-click="uploadRemove($index)">X</div>
 							</li>
@@ -59,9 +60,25 @@
 					</div>
 				</div>
 				<div class="modal-footer">
+					<!-- Progress bar -->
+					<div class="progress" ng-show="progressBar">
+						<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+							0%
+						</div>
+					</div>
+					<div class="alert alert-danger editError" ng-show="editError.errorMsg">Fatal error: {{errorMsg}}</div>
+					<div class="alert alert-danger editError" ng-show="editError.fieldEmpty">You should fill in empty field(s)</div>
+					<div class="alert alert-danger editError" ng-show="editError.markersEmpty">There is none of markers to save</div>
+					<div class="alert alert-danger editError" ng-show="editError.markersNumber">Number of markers is too big</div>
+					<div class="alert alert-danger editError" ng-show="editError.sector">Some sector(s) is undefined</div>
+					<div class="alert alert-info editError" ng-show="editError.save">Some equal markers was found</div>
 					<button id="uploadModalOK" type="button" data-dismiss="modal" style="display:none;"></button>
-					<button type="submit" class="btn btn-success" ng-click="uploadSave()">Save to data base</button>
-					<button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+					<div id="footer">
+						<p>Number of elements: {{parsedLength}}</p>
+						<button type="submit" class="btn btn-success" ng-click="uploadSave()" ng-disabled="save">Save</button>
+						<button type="submit" class="btn btn-success" ng-click="nextPool()" ng-disabled="next">Next</button>
+						<button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+					</div>
 				</div>
 				</form>
 			</div>

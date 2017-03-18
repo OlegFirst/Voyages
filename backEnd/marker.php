@@ -145,7 +145,6 @@
 			return;
 		}
 		$sql="DELETE FROM $tableName WHERE $sqlSearch";
-		echo $sql;
 		$res=$conn->query($sql);
 		$conn->close();
 		if ($res===FALSE){
