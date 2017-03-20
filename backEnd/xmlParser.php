@@ -67,7 +67,11 @@
 				if ($j>1)
 					echo ",";
 				$one=$row["name"];
+				//Change
+				// ' to @
+				// " to /
 				$one=str_replace("'","@",$one);//Avoid errors with DB 
+				$one=str_replace('"','/',$one);//Avoid errors with DB 
 				$num=$row["number"];
 				echo '{"number":"'.$num.'","name":"'.$one.'","lat":"'.$lat.'","lng":"'.$lng.'"}';
 				$j++;

@@ -61,7 +61,7 @@
 				</div>
 				<div class="modal-footer">
 					<!-- Progress bar -->
-					<div class="progress" ng-show="progressBar">
+					<div class="progress" ng-show="progressB">
 						<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
 							0%
 						</div>
@@ -76,7 +76,7 @@
 					<div id="footer">
 						<p>Number of elements: {{parsedLength}}</p>
 						<button type="submit" class="btn btn-success" ng-click="uploadSave()" ng-disabled="save">Save</button>
-						<button type="submit" class="btn btn-success" ng-click="nextPool()" ng-disabled="next">Next</button>
+						<button type="submit" class="btn btn-success" ng-click="nextPool()">Next</button>
 						<button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
 					</div>
 				</div>
@@ -108,13 +108,6 @@
 					<div class="form-group">
 						<label for="usr">Sector: {{obj.content.sector}}</label>
 					</div>
-					
-					<!-- <div class="form-group">
-						<label for="sel">Sector:</label>
-						<select class="form-control" ng-model="sectorSelected">
-							<option ng-repeat="x in sectors">{{x}}
-						</select>
-					</div> -->
 				</div>
 				<div class="modal-footer">
 					<button id="editModalOK" type="button" data-dismiss="modal" style="display:none;"></button>

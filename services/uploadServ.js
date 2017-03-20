@@ -9,7 +9,7 @@
 'user strict';
 
 angular.module('uploadModule')
-	.controller('uploadController',function($scope,uploadService,$timeout,$http,uploadSectorService){
+	.controller('uploadController',function($scope,uploadService,$timeout,$http,uploadSectorService,progressBar){
 		
 		$scope.maxId=0;//'id' of the last saved marker into the DB
 		$scope.parsedLength=0;//Number elements in the parsed XML file
@@ -24,7 +24,8 @@ angular.module('uploadModule')
 			$scope.parsedLength=0;
 			$scope.uploadReadFile=false;//Activate 'Read file'-button
 			$scope.save=true;//Dis activate 'Save'-button
-			$scope.next=true;//Next pool
+			progressBar.clear();
+			$scope.progressB=false;
 			$scope.uploadClear();
 		}
 		
@@ -32,7 +33,7 @@ angular.module('uploadModule')
 		$scope.uploadClear=function(){
 			clearEditErrors();
 			$scope.processingFile=false;
-			$scope.progressBar=false;//Progress bar hide
+			//$scope.progressBar=false;
 		}
 		
 		//Upload
@@ -61,6 +62,8 @@ angular.module('uploadModule')
 								//Part of the parsed data reads from server. Get pool elements.
 								number=1;
 								$scope.save=false;//Activate 'Save'-button
+								progressBar.start($scope.parsedLength);//Progress bar activated
+								$scope.progressB=true;//Progress bar show
 								$scope.editData();//Go to the first data editing
 							}
 							else{
@@ -80,7 +83,6 @@ angular.module('uploadModule')
 		//Load pool and data editing
 		$scope.editData=function(){
 			$scope.processingFile=true;
-			$scope.next=true;//Dis activate 'Next'-button
 			//Read no more than 'step' elements
 				uploadService.loadXML(fileName,number,step,function(response){
 					if (response.success){
@@ -167,7 +169,6 @@ angular.module('uploadModule')
 					isError=true;
 			if (!isError){
 				$scope.save=true;//Dis activate 'save'-button
-				$scope.progressBar=true;//Progress bar show
 				//Add marker from 'markers' to DB
 				uploadService.saveMarkers(angular.toJson($scope.markers),function(response){
 					if (response.success){
@@ -180,7 +181,6 @@ angular.module('uploadModule')
 									$scope.markers[j].selected="selected";
 								}
 							}
-						$scope.next=false;//Activate 'Next'-button
 					}
 					else{
 						//Markers pool saving error
@@ -196,18 +196,15 @@ angular.module('uploadModule')
 			clearEditErrors();
 			number+=step;
 			$scope.markers=[];
-			if (number<$scope.parsedLength)
+			if (number<$scope.parsedLength){
+				progressBar.nextStep(number);//Progress bar show next step
 				$scope.editData();
+			}
 			else{
 				console.log("Well done!");
+				$("#uploadModalOK").trigger("click");
 			}
 		}
-		
-		//Hide upload modal
-		//$scope.uploadModalSubmit=function(){
-			//console.log("submit");
-			//$("#uploadModalOK").trigger("click");
-		//}
 		
 		/* ERROR events */
 		//Showing file error during several seconds
@@ -376,85 +373,29 @@ angular.module('uploadModule')
 				callBack(response);
 			});
 		}
+	})
+	
+	//Progress bar animate
+	.service('progressBar',function(){
+		var parsedLength=0;
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		this.saveMarkers1=function(id,markers){
-			//Thread start
-			var i=0;
-			var j=0;
-			var step=Math.round(100/markers.length);
-			var progress=0;
-			var isSaved=true;//Show saving process
-			var isError=false;			
-			var interval=setInterval(insertToDB,1000);
-			function insertToDB(){
-				//If saving complete
-				if (isSaved){
-					if (j<markers.length){
-						
-						if (isError)
-							marker[j].sector="_";
-						
-						//Progress bar moves
-						progress+=step;
-						$(".progress>div").css("width",progress+"%");
-						$(".progress>div").text(progress+"%");
-						//Save marker to DB
-						saveMarker(markers[j]);
-						j++;
-					}
-					else{
-						clearInterval(interval);
-						$(".progress>div").css("width","100%");
-						$(".progress>div").text("100%");
-						alert("Saving complete");
-						$("#uploadModalOK").trigger("click");
-						
-					}
-				}			
-				i++;
-				if (i>40){//Not fast enough
-					clearInterval(interval);
-					alert("Time is out!");
-				}
-			}			
-			
-			//Send to server
-			function saveMarker(obj){
-				isSave=false;
-				isError=false;
-				id++;
-				console.log(id);
-				var objSend={
-					id: id,
-					lat: obj.lat,
-					lng: obj.lng,
-					sector: obj.sector,
-					name: obj.name
-				}
-				$http.post("backEnd/marker.php/markers/",objSend).success(function(data){
-					isSave=true;
-					console.info("Save to DB success");
-				})
-				.error(function(data){
-					isSave=true;
-					isError=true;
-					console.error("Save to DB error");
-				});
-			}
+		this.clear=function(){
+			$(".progress>div").css("width","0%");
+			$(".progress>div").text("0%");
+		}
+				
+		this.start=function(len){
+			parsedLength=len;
+		}
+
+		this.nextStep=function(number){
+			var progress=Math.round(number*100/parsedLength);
+			$(".progress>div").css("width",progress+"%");
+			$(".progress>div").text(progress+"%");
 		}
 		
+		this.finish=function(){
+			$(".progress>div").css("width","100%");
+			$(".progress>div").text("100%");
+		}
 	});
