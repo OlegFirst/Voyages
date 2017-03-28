@@ -1,0 +1,148 @@
+body{
+	min-width: 319px;
+}
+
+/* Modals */
+.modal-header{
+	background-color: #F2F2F2;
+}
+.modal-content{
+	overflow: hidden;
+}
+input[type=checkbox]{
+	height: 15px;
+}
+.btn-link{
+	text-decoration: underline;
+}
+#editModal, #removeModal{
+	/*display: none;*/
+}
+
+/* Header */
+header{
+	background-color: #bfbfbf;
+	width: 100%;
+	height: 50px;
+}
+header a:first-child{
+	font-size: 200%;
+	padding-left: 100px;
+	padding-top: 7px;
+	float: left;
+	color: white;
+	text-decoration: none;
+	font-weight: bold;
+}
+header>div{
+	position: relative;
+	width: 250px;
+	height: 50px;
+	float: right;
+	margin-right: 20px;
+}
+#userLogin{
+	position: absolute;
+	display: inline-block;
+	left: 0px;
+	top: 15px;
+	color: #5CB85C;
+}
+#signOut{
+	position: absolute;
+	right: 0px;
+	top: 14px;
+	padding: 0px 8px;
+	color: #BFBFBF;
+	border: none;
+}
+@media screen and (max-width: 620px){
+	header a:first-child{
+		padding-left: 40px;
+	}
+}
+@media screen and (max-width: 450px){
+	header{
+		height: 100px;
+	}
+	header>div{
+		width: 80%;
+		margin: 0px;
+		margin-right: 5%;
+	}
+}
+
+/* Login and register forms */
+/*Login*/
+#loginForm, #registerForm{
+	position: relative;
+	background-color: #bfbfbf;
+	border-radius: 5px;
+	padding: 15px;
+	width: 300px;
+	margin: 0 auto;
+	margin-top: 100px;
+}
+#loginForm{
+	height: 255px !important;
+}
+#registerForm{
+	height: 377px !important;
+}
+#loginForm>h1, #registerForm>h1{
+	font-weight: bold;
+	color: #5CB85C;
+}
+#loginForm>a, #registerForm>a{
+	display: block;
+	position: absolute;
+	top: 10px;
+	right: 20px;
+	text-decoration: underline;
+}
+#loginForm .form-control{
+	width: 70%;
+	float: left;
+}
+#loginForm label, #registerForm label{
+	display: block;
+	height: 33px;
+	padding-top: 4px;
+	padding-left: 3px;
+	float: left;
+	width: 25%;
+}
+#loginForm .btn{
+	margin-left: 3px;
+}
+#error, #success{
+	width: 80%;
+	margin: 20px auto;
+	text-align: center;
+}
+@media screen and (max-width: 350px){
+	#loginForm{
+		width: 285px;
+	}
+}
+/*Register*/
+#registerForm  label{
+	margin-top: -14px;
+	padding-top: 10px;
+}
+#registerForm .btn{
+	margin-top: 20px;
+	width: 100%;
+}
+
+/* Navigation */
+nav{
+	background-color: #8080801A;
+	width: 100%;
+	height: 32px;
+}
+
+/* View */
+#ngViewOuter .ng-scope, #ngViewOuter .section{
+	height: calc(100vh - 50px);
+}

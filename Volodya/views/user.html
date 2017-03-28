@@ -1,0 +1,58 @@
+<!-- User view -->
+<div ng-controller="userController">
+
+	<!-- Section -->
+	<section>
+		<div id="pointList" class="user">
+			<div id="cursorPosition" class="alert alert-info"></div>
+			<div id="cursorNewPosition" class="alert alert-info"></div>
+			<div id="searchMarkerName">
+				<input type="text" class="form-control user" placeholder="Marker name" ng-model="markerName">
+				<button class="btn btn-link" type="button" ng-click="searchMarkerNameCancel()">Cancel</button>
+				<button class="btn btn-info" type="button" ng-click="searchMarkerName()">Search</button>
+			</div>
+		</div>
+		<div id="map" alt="Ukraine map"></div>
+	</section>
+
+<div class="container">
+	<button id="removeModal" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#remove" style="display: none;>Open Modal</button>
+	<!-- Marker remove -->
+	<div id="remove" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-sm">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Marker remove</h4>
+				</div>
+				<div class="modal-body">
+					<div class="modal-body">
+					<div class="form-group">
+						<label for="usr">Name:</label>
+						<input type="text" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label for="usr">Sector:</label>
+						<input type="text" class="form-control" required>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox">Existing</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox">Visited</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox">Captured</label>
+					</div>
+				</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+					<button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	
+</div>
