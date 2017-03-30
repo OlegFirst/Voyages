@@ -28,7 +28,7 @@ angular.module('mapModule')
 		$scope.editModalSubmit=function(){
 			//Validation name
 			var msg=$scope.obj.content.name;
-			var patt=/^[a-zA-Z]{1}[a-zA-Z0-9]{0,9}/g;
+			var patt=/^[a-zA-Zа-яА-Я]{1}[a-zA-Zа-яА-Я0-9]{0,19}/g;
 			var res=patt.test(msg);
 			if (!res)
 				console.error("Name incorrect");
@@ -126,21 +126,21 @@ angular.module('mapModule')
 			}
 			else{
 				//User model content
-				console.info("User model content");
-				//if (content==null)
-					//This marker is created with map
-					//content={
-					//	sector: "",
-					//	name: "",
-					//	isVisited: false,
-					//	isCaptured: false
-					//};
-				//this.obj={
-					//sector: content.sector,
-					//name: content.name,
-					//isVisited: content.isVisited,
-					//isCaptured: content.isCaptured
-				//};				
+				var i=null;
+				this.obj={
+					sector: "",
+					name: "",
+					isVisited: false,
+					isCaptured: false
+				};
+				for (i in this.obj){
+					var j=null;
+					for (j in content)
+						if (i===j){
+							this.obj[i]=content[j];
+							break;
+						}
+				}			
 			}
 			return this.obj;
 		}
@@ -151,8 +151,7 @@ angular.module('mapModule')
 		var server=true;
 		
 		var collection=[];
-		console.log(collection);
-		
+				
 		function Obj(marker,content){
 			this.marker=marker;
 			this.content=content;
@@ -165,7 +164,6 @@ angular.module('mapModule')
 					marker.setMap(null);//Remove marker from map
 				}
 				collection=[];
-				console.log("clear: ",collection);
 			},
 			
 			//Add new marker to MODEL
@@ -215,6 +213,15 @@ angular.module('mapModule')
 			getterObj: function(id){
 				var j=searchJ(id);
 				return collection[searchJ(id)];//Return object according to id
+			},
+			
+			/*User*/
+			//Marker change
+			userMarkerChange: function(id,visited,captured){
+				var j=searchJ(id);
+				collection[j].content.isVisited=visited;
+				collection[j].content.isCaptured=captured;
+				console.log(collection);
 			}
 		}
 		
@@ -235,15 +242,15 @@ angular.module('mapModule')
 		this.html=function(id,arg){
 			if (settings.identified==="admin"){
 				//Administrator
-				var inner="<p><b>Name: </b>"+arg.name+"</p>"+
-					"<p><b>Sector: </b>"+arg.sector+"</p>"
+				var inner="<p class='infoWindowName'><b>Name: </b>"+arg.name+"</p>"+
+					"<p class='infoWindowSector'><b>Sector: </b>"+arg.sector+"</p>"
 			}
 			else{
 				//User
-				var inner="<p><b>Name: </b>"+arg.name+"</p>"+
-					"<p><b>Sector: </b>"+arg.sector+"</p>"+
-					"<p>Visited<input type='checkbox' value="+arg.isVisited+"disabled></p>"+
-					"<p>Captured<input type='checkbox' value="+arg.isCaptured+"disabled></p>";
+				var inner="<p class='infoWindowName'><b>Name: </b>"+arg.name+"</p>"+
+					"<p class='infoWindowSector'><b>Sector: </b>"+arg.sector+"</p>"+
+					"<hr><p><b>Visited</b><input type='checkbox' class='infoWindowCheckBox' value="+arg.isVisited+" disabled></p>"+
+					"<p><b>Captured</b><input type='checkbox' class='infoWindowCheckBox' value="+arg.isCaptured+" disabled></p>";
 			}
 			inner+="<p><button onclick='markerEdit("+id+")'>Edit</button><button onclick='markerRemove("+id+")'>Remove</button></p>";
 			return inner;
@@ -251,13 +258,20 @@ angular.module('mapModule')
 		//Window create
 		this.create=function(id,arg){
 			var inner=this.html(id,arg);
-			var outer="<div id='marker"+id+"'>"+inner+"</div>";
+			var outer="<div id='marker"+id+"' class='infoWindow'>"+inner+"</div>";
 			return outer;
 		}
 		//Window update
 		this.update=function(id,arg){
+			info=arg;
 			var inner=this.html(id,arg);
 			document.getElementById("marker"+id).innerHTML=inner;
+		}
+		//User infoWindow update
+		this.userUpdate=function(id,visited,captured){
+			var element=document.getElementById("marker"+id);
+			element.getElementsByClassName("infoWindowCheckBox")[0].checked=visited;
+			element.getElementsByClassName("infoWindowCheckBox")[1].checked=captured;
 		}
 	})
 	

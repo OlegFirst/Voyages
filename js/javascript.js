@@ -19,9 +19,7 @@ function signUpOut(userMail){
 }
 
 //Map start
-var map=null;
 function mapInit(){
-	if (map===null){
 	//Map initialize
 		map=new google.maps.Map(document.getElementById("map"),{
 		center: {lat: 49.41097, lng: 31.55273},
@@ -32,18 +30,13 @@ function mapInit(){
 		mapTypeId: google.maps.MapTypeId.TERRAIN
 		});
 		console.info("mapInit");
-	}
-	
-	/*map.addListener('zoom_changed',function(){
-		console.log(map.zoom);
-	})*/
 }
 
 /* Modal */
 //Marker edit modal show
 function markerEdit(markerId){
 	id=markerId;
-	$("#editModal").trigger("click");
+	$("#editModal").trigger("click");//Show #editModal within administrator.html/user.html
 }
 //Marker remove
 function markerRemove(markerId){

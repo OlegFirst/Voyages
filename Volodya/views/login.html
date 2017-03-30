@@ -1,9 +1,0 @@
-<form id="loginForm" class="form-horizontal" ng-submit="loginSubmit()" role="form">
-	<h1>Login</h1><br>
-	<a href="#register">Register</a>
-	<input type="text" class="form-control" id="email" placeholder="Enter email" ng-model="mail" required><label>@gmail.com</label>
-	<input type="password" class="form-control" id="pwd" placeholder="Enter password" ng-model="password" required>
-	<button type="submit" class="btn btn-success">Login</button>
-	<div id="error" ng-show="showError" class="alert alert-danger">{{error}}</div>
-	<div id="success" ng-show="showSuccess" class="alert alert-success">{{success}}</div>
-</form>

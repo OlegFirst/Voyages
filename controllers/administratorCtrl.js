@@ -2,9 +2,10 @@
 
 angular.module('administratorModule')
 	
-	.controller('administratorController',function($scope,settings,mapCan,mapService,dataBaseService,sectorService,sectorEvents,pointList){
+	.controller('administratorController',function($scope,settings,sectorService,sectorEvents,pointList){
 	//Choose sector for edit
 	$scope.mapStart=function(){
+		$scope.searchInfo=false;
 		//Hide navigation
 		$scope.navHide=true;
 		//Show point list content
@@ -22,11 +23,16 @@ angular.module('administratorModule')
 		settings.identificate('admin');
 	}
 	$scope.searchMarkerName=function(){
-		pointList.search1($scope.markerName);
+		$scope.searchInfo=false;
+		var res=pointList.search1($scope.markerName);
+		if (!res)
+			$scope.searchInfo=true;
 	}
 	//Marker animation stop
 	$scope.searchMarkerNameCancel=function(){
 		pointList.search1Stop();
+		$scope.searchInfo=false;
+		$scope.markerName="";
 	}
 	
 	//Users map edit
@@ -41,19 +47,13 @@ angular.module('administratorModule')
 			markerCount: 15
 		};*/
 	}
-	
-	//Upload KML file for add it into the DB
-	
-	
+		
 	/*$scope.user1=function(){
 		console.info("user1Edit");
 	}
 	$scope.user2=function(){
 		console.info("user2Edit");
-	}
-	$scope.upload=function(){
-		console.info("upload");
-	}*/	
+	}*/
 	});	
 	
 	//User list directive for <user-list> tag

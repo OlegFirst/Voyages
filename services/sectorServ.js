@@ -14,8 +14,6 @@ angular.module('sectorModule').factory('sectorEvents',function(mapService,sector
 	var circle=null;
 	var circleRadius=[40000,40000,40000,30000,50000,50000,40000,15000,8000,4000,2500,1500,800,200,150,80,40,20];
 	var sectorCoordinates=null;//Sector bounds coordinates
-	var positionMessage=document.getElementById('cursorPosition');//Show cursor position message div
-	var positionNewMessage=document.getElementById('cursorNewPosition');//Show new cursor position message div
 		
 	/*---------- Sector events preparations ----------------*/
 	service.preparation=function(){
@@ -45,14 +43,13 @@ angular.module('sectorModule').factory('sectorEvents',function(mapService,sector
 				startMapCursoreMove(position);
 			else{//Sector edit
 				if (!isWithin(position)){//Cursor went out the selected sector
-					if (!circle.getVisible()){
+					if (!circle.getVisible())
 						circle.setVisible(true);
-					}
 					var res=sectorService.sectorSearch(position);
 					var msg="None";
 					if (res!=null)
 						msg="<strong>Cursor: </strong>"+res.sectorMarker.marker.label;
-					positionNewMessage.innerHTML=msg;					
+					document.getElementById('cursorNewPosition').innerHTML=msg;	
 				}
 				if (isWithin(position) && circle.getVisible()){//Cursor went in the selected sector
 					circle.setVisible(false);
@@ -94,7 +91,7 @@ angular.module('sectorModule').factory('sectorEvents',function(mapService,sector
 			//Selected sector check
 			var res=sectorService.sectorSearch(position);
 			if (res!=null){
-				positionMessage.innerHTML="<strong>Sector: </strong>"+res.sectorMarker.marker.label;
+				document.getElementById('cursorPosition').innerHTML="<strong>Sector: </strong>"+res.sectorMarker.marker.label;
 				if (startMap){
 					startMap=false;
 					map.setZoom(10);
@@ -105,8 +102,8 @@ angular.module('sectorModule').factory('sectorEvents',function(mapService,sector
 				//Read markers in the chosen sector
 				mapService.readSector(res.sectorMarker.marker.label);
 			}
-			else
-				positionMessage.innerHTML="None";
+			else				
+				document.getElementById('cursorNewPosition').innerHTML="None";
 			}
 		});
 	}
@@ -161,7 +158,7 @@ angular.module('sectorModule').factory('sectorEvents',function(mapService,sector
 			var msg="<strong>Cursor position: </strong>"+res.sectorMarker.marker.label;
 		else
 			var msg="None";
-		positionMessage.innerHTML=msg;
+		document.getElementById('cursorPosition').innerHTML=msg;
 	}	
 	
 	return service;
@@ -170,19 +167,17 @@ angular.module('sectorModule').factory('sectorEvents',function(mapService,sector
 .service('pointList',function(model){
 	
 	this.search1=function(markerName){
+		this.search1Stop();//Animated marker stop
 		var len=model.getterLength();//Model collection length
 		var match=false;
 		for (var i=0; i<len; i++){
 			var obj=model.getter(i);
-			console.log(obj.content.name);
 			if (markerName===obj.content.name){
-				console.log(i);
-				i=obj;
 				obj.marker.setAnimation(google.maps.Animation.BOUNCE);
 				match=true;
 			}
 		}
-		console.log(match);
+		return match;
 	};
 	
 	//Marker animation stop

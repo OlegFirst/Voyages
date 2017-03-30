@@ -17,10 +17,10 @@
 			<div id="cursorNewPosition" class="alert alert-info"></div>
 			<div id="searchMarkerName">
 				<input type="text" class="form-control" placeholder="Marker name" ng-model="markerName">
+				<div class="alert alert-danger" ng-show="searchInfo">Not found</div><!-- Show search result -->
 				<button class="btn btn-link" type="button" ng-click="searchMarkerNameCancel()">Cancel</button>
 				<button class="btn btn-info" type="button" ng-click="searchMarkerName()">Search</button>
 			</div>
-			
 			<users-list></users-list><!-- List of users -->
 		</div>
 		<div id="map" alt="Ukraine map"></div>
@@ -103,7 +103,7 @@
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="usr">Name:</label>
-						<input type="text" class="form-control" ng-model="obj.content.name" maxlength="10" required>
+						<input type="text" class="form-control" ng-model="obj.content.name" maxlength="20" required>
 					</div>
 					<div class="form-group">
 						<label for="usr">Sector: {{obj.content.sector}}</label>

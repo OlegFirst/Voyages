@@ -54,9 +54,6 @@ var info;
 	//Application start parameters
 	mainApp.run(function($location){
 		$location.path('/login');
-		//Go to the login page
-		//$location.path('/administrator');
-		//document.getElementById("userLogin").innerHTML="User: "+'one@gmail.com';
 		//$location.path('/user');
 	});
 	

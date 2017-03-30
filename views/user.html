@@ -3,57 +3,18 @@
 
 	<!-- Section -->
 	<section>
-		<div id="pointList">
+		<div id="pointList" class="user">
 			<div id="cursorPosition" class="alert alert-info"></div>
 			<div id="cursorNewPosition" class="alert alert-info"></div>
 			<div id="searchMarkerName">
 				<input type="text" class="form-control user" placeholder="Marker name" ng-model="markerName">
+				<div class="alert alert-danger" ng-show="searchInfo">Not found</div><!-- Show search result -->
 				<button class="btn btn-link" type="button" ng-click="searchMarkerNameCancel()">Cancel</button>
 				<button class="btn btn-info" type="button" ng-click="searchMarkerName()">Search</button>
 			</div>
 		</div>
 		<div id="map" alt="Ukraine map"></div>
 	</section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <div class="container">
 	<button id="removeModal" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#remove" style="display: none;>Open Modal</button>
@@ -94,5 +55,32 @@
 		</div>
 	</div>
 	</div>
+	
+	<!-- Trigger the modal with a button -->
+	<div class="userHidden" class="cotainer">
+		<button id="editModal" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#userEditModalInner" ng-click="userMarkerEdit()" style="display:none;">Open Modal</button>
+		<div id="userEditModalInner" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<form role="form">
+						<div class="modal-header">
+							<h4 class="modal-title">Marker edit</h4>
+						</div>
+						<div class="modal-body">
+							<p><b>Name:</b> {{obj.content.name}}</p>
+							<p><b>Sector:</b> {{obj.content.sector}}</p>
+							<p><b>Visited</b><input type="checkbox" ng-model="obj.isVisited"></p>
+							<p><b>Captured</b><input type="checkbox" ng-model="obj.isCaptured"></p>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-success" data-dismiss="modal" ng-click="userEditModalSubmit()">OK</button>
+							<button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>	
 	
 </div>

@@ -1,0 +1,18 @@
+/* Show 'popintList' */
+.user>div:not(.userHidden){
+	display: block !important;
+}
+
+/* Info window */
+.infoWindowCheckBox{
+	position: relative;
+	top: 4px;
+	left: 5px;
+}
+
+/*User edit modal*/
+#userEditModalInner input{
+	position: relative;
+	top: 3px;
+	left: 5px;
+}
