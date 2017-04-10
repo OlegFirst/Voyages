@@ -8,6 +8,7 @@ var info;
 	angular.module('registerModule',[]);
 	angular.module('administratorModule',[]);
 	angular.module('userModule',[]);
+	angular.module('userMapModule',[]);
 	angular.module('mapModule',[]);
 	angular.module('sectorModule',[]);
 	angular.module('uploadModule',[]);
@@ -22,6 +23,7 @@ var info;
 		'uploadModule',
 		'administratorModule',
 		'userModule',
+		'userMapModule',
 		'ngRoute'
 	]);
 		
@@ -54,7 +56,6 @@ var info;
 	//Application start parameters
 	mainApp.run(function($location){
 		$location.path('/login');
-		//$location.path('/user');
 	});
 	
 	mainApp.value("defaultUser","unregistered ");

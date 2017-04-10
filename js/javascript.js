@@ -1,4 +1,5 @@
 var id=null;//Marker 'id' for edit
+var userMarkerId=null;//Get user marker
 
 //Sign up / sign out
 function signUpOut(userMail){
@@ -46,6 +47,11 @@ function markerRemove(markerId){
 //Upload
 function uploadModalShow(){
 	$("#uploadModal").trigger("click");
+}
+//User get new marker
+function getNewMarker(markerId){
+	userMarkerId=markerId;
+	$("#getNewMarker").trigger("click");
 }
 
 $(document).ready(function(){

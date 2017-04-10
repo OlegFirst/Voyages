@@ -13,7 +13,7 @@ angular.module('sectorModule').factory('sectorEvents',function(mapService,sector
 	var startMap=null;//Show if that either start map or editing sector
 	var circle=null;
 	var circleRadius=[40000,40000,40000,30000,50000,50000,40000,15000,8000,4000,2500,1500,800,200,150,80,40,20];
-	var sectorCoordinates=null;//Sector bounds coordinates
+	var sectorCoordinates=null;//Sector bounds coordinates	
 		
 	/*---------- Sector events preparations ----------------*/
 	service.preparation=function(){
@@ -29,6 +29,7 @@ angular.module('sectorModule').factory('sectorEvents',function(mapService,sector
 			if (startMap){//Start map			
 				circle.setCenter(new google.maps.LatLng(position.lat,position.lng));
 				startMapCursoreMove(position);
+				isWithinMap(position);
 			}
 		});
 		
@@ -39,8 +40,10 @@ angular.module('sectorModule').factory('sectorEvents',function(mapService,sector
 				lng: event.latLng.lng()
 			};
 			circle.setCenter(new google.maps.LatLng(position.lat,position.lng));
-			if (startMap)
+			if (startMap){
 				startMapCursoreMove(position);
+				isWithinMap(position);
+			}
 			else{//Sector edit
 				if (!isWithin(position)){//Cursor went out the selected sector
 					if (!circle.getVisible())
@@ -106,6 +109,15 @@ angular.module('sectorModule').factory('sectorEvents',function(mapService,sector
 				document.getElementById('cursorNewPosition').innerHTML="None";
 			}
 		});
+		
+		//Check if cursor within map
+		function isWithinMap(position){
+			var res=sectorService.sectorSearch(position);
+			if (res==null)
+				circle.setVisible(false);
+			else
+				circle.setVisible(true);
+		}
 	}
 	
 	/*---------- Circle ----------------*/

@@ -4,57 +4,27 @@
 	<!-- Section -->
 	<section>
 		<div id="pointList" class="user">
-			<div id="cursorPosition" class="alert alert-info"></div>
+			<div id="cursorPosition" class="alert alert-info" ng-model="sectorName"></div>
 			<div id="cursorNewPosition" class="alert alert-info"></div>
-			<div id="searchMarkerName">
+			<div id="searchMarkerName" class="panel panel-default">
 				<input type="text" class="form-control user" placeholder="Marker name" ng-model="markerName">
 				<div class="alert alert-danger" ng-show="searchInfo">Not found</div><!-- Show search result -->
 				<button class="btn btn-link" type="button" ng-click="searchMarkerNameCancel()">Cancel</button>
 				<button class="btn btn-info" type="button" ng-click="searchMarkerName()">Search</button>
 			</div>
-		</div>
-		<div id="map" alt="Ukraine map"></div>
-	</section>
-
-<div class="container">
-	<button id="removeModal" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#remove" style="display: none;>Open Modal</button>
-	<!-- Marker remove -->
-	<div id="remove" class="modal fade" role="dialog">
-		<div class="modal-dialog modal-sm">
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Marker remove</h4>
-				</div>
-				<div class="modal-body">
-					<div class="modal-body">
-					<div class="form-group">
-						<label for="usr">Name:</label>
-						<input type="text" class="form-control" required>
-					</div>
-					<div class="form-group">
-						<label for="usr">Sector:</label>
-						<input type="text" class="form-control" required>
-					</div>
-					<div class="checkbox">
-						<label><input type="checkbox">Existing</label>
-					</div>
-					<div class="checkbox">
-						<label><input type="checkbox">Visited</label>
-					</div>
-					<div class="checkbox">
-						<label><input type="checkbox">Captured</label>
-					</div>
-				</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
-					<button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+			<!-- Show markers within the sector -->
+			<br>
+			<div id="showMarkers" class="panel panel-default">
+				<div class="panel-heading"><b>Markers</b></div>
+				<div class="panel-body">
+					<p><input type="button" class="btn btn-info" value="{{firstInput.value}}" ng-click="firstInputClicked()"></p>
+					<p><input type="button" class="btn btn-info" value="{{secondInput.value}}" ng-click="secondInputClicked()"></p>
+					<div class="alert alert-success" ng-show="sectorMarkersInfo.isShow">{{sectorMarkersInfo.msg}}</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	</div>
+		<div id="map" alt="Ukraine map"></div>
+	</section>
 	
 	<!-- Trigger the modal with a button -->
 	<div class="userHidden" class="cotainer">
@@ -70,8 +40,8 @@
 						<div class="modal-body">
 							<p><b>Name:</b> {{obj.content.name}}</p>
 							<p><b>Sector:</b> {{obj.content.sector}}</p>
-							<p><b>Visited</b><input type="checkbox" ng-model="obj.isVisited"></p>
-							<p><b>Captured</b><input type="checkbox" ng-model="obj.isCaptured"></p>
+							<p><b>Visited</b><input type="checkbox" ng-model="obj.content.isVisited"></p>
+							<p><b>Captured</b><input type="checkbox" ng-model="obj.content.isCaptured"></p>
 						</div>
 						<div class="modal-footer">
 							<button type="submit" class="btn btn-success" data-dismiss="modal" ng-click="userEditModalSubmit()">OK</button>
@@ -81,6 +51,11 @@
 				</div>
 			</div>
 		</div>
-	</div>	
+	</div>
+
+	<!-- User marker remove -->
+	<button id="removeModal" type="button" ng-click="userMarkerRemove()" style="display:none;"></button>
+	<!-- User get new marker -->
+	<button id="getNewMarker" ng-click="getNewMarker()" style="display:none;"></button>
 	
 </div>

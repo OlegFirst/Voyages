@@ -16,3 +16,17 @@
 	top: 3px;
 	left: 5px;
 }
+
+/*Show markers*/
+#showMarkers .panel-header{
+	text-align: center;
+}
+
+/*Search marker*/
+#searchMarkerName{
+	padding: 5px;
+}
+
+.userGet{
+	border: 1px solid green;
+}

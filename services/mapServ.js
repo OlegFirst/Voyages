@@ -86,6 +86,7 @@ angular.module('mapModule')
 	/* Settings for 'arg'=administrator/user */
 	.service('settings',function(mapCan){
 		this.identified="";
+		this.userMail="";
 		this.identificate=function(arg){
 			if (arg==="admin"){
 				//For administrator
@@ -98,7 +99,10 @@ angular.module('mapModule')
 				if (arg==="user"){
 					//For user
 					console.info("User identified");
-					this.identified=arg;
+					this.identified=arg;//User identification
+					this.userMail=document.getElementById("userLogin").innerHTML;
+					var res=this.userMail.indexOf(":");
+					this.userMail=this.userMail.slice(res+2,this.userMail.length);//Get user name
 				}
 				else console.error("Settings error: not identified!");
 		}
@@ -137,6 +141,13 @@ angular.module('mapModule')
 					var j=null;
 					for (j in content)
 						if (i===j){
+							if (i==="isVisited" || i==="isCaptured"){
+								//Convert into BOOLEAN
+								if (content[j]==0)
+									content[j]=false;
+								if (content[j]==1)
+									content[j]=true;
+							}
 							this.obj[i]=content[j];
 							break;
 						}
@@ -147,7 +158,7 @@ angular.module('mapModule')
 	})
 	
 	/* Map model */
-	.service('model',function(dataBaseService,modelContent){
+	.service('model',function(dataBaseService,modelContent,settings){
 		var server=true;
 		
 		var collection=[];
@@ -180,6 +191,7 @@ angular.module('mapModule')
 			addLoadedMarker: function(marker,contentObj){
 				var obj=new Obj(marker,contentObj);
 				collection.push(obj);
+				console.log(collection);
 			},
 			
 			//Marker change
@@ -212,21 +224,29 @@ angular.module('mapModule')
 			},
 			getterObj: function(id){
 				var j=searchJ(id);
-				return collection[searchJ(id)];//Return object according to id
+				if (j==-1)
+					return null;//Object is not found
+				else
+					return collection[searchJ(id)];//Return object according to id
 			},
 			
 			/*User*/
 			//Marker change
-			userMarkerChange: function(id,visited,captured){
+			userMarkerChange: function(id){
 				var j=searchJ(id);
-				collection[j].content.isVisited=visited;
-				collection[j].content.isCaptured=captured;
-				console.log(collection);
+				//DB update
+				dataBaseService.userMarkerUpdate(settings.userMail,collection[j]);
+			},
+			//Marker remove
+			userMarkerRemove: function(id){
+				var j=searchJ(id);
+				collection.splice(j,1);
+				dataBaseService.userMarkerRemove(settings.userMail,id);
 			}
 		}
 		
 		function searchJ(id){
-			var j=0;
+			var j=-1;//Not found
 			for (var i=0; i<collection.length; i++){
 				if (id==collection[i].marker.id){
 					j=i;
@@ -239,8 +259,9 @@ angular.module('mapModule')
 	
 	/* infoWindow content */
 	.service('infoWindow',function(settings){
+		var sectorMarkersShow=false;//Is showing markers for user
 		this.html=function(id,arg){
-			if (settings.identified==="admin"){
+			if (settings.identified==="admin" || sectorMarkersShow){
 				//Administrator
 				var inner="<p class='infoWindowName'><b>Name: </b>"+arg.name+"</p>"+
 					"<p class='infoWindowSector'><b>Sector: </b>"+arg.sector+"</p>"
@@ -249,7 +270,7 @@ angular.module('mapModule')
 				//User
 				var inner="<p class='infoWindowName'><b>Name: </b>"+arg.name+"</p>"+
 					"<p class='infoWindowSector'><b>Sector: </b>"+arg.sector+"</p>"+
-					"<hr><p><b>Visited</b><input type='checkbox' class='infoWindowCheckBox' value="+arg.isVisited+" disabled></p>"+
+					"<hr><p><b>Visited</b><input type='checkbox' class='infoWindowCheckBox'"+" disabled></p>"+
 					"<p><b>Captured</b><input type='checkbox' class='infoWindowCheckBox' value="+arg.isCaptured+" disabled></p>";
 			}
 			inner+="<p><button onclick='markerEdit("+id+")'>Edit</button><button onclick='markerRemove("+id+")'>Remove</button></p>";
@@ -257,18 +278,27 @@ angular.module('mapModule')
 		}
 		//Window create
 		this.create=function(id,arg){
+			sectorMarkersShow=false;
+			var inner=this.html(id,arg);
+			var outer="<div id='marker"+id+"' class='infoWindow'>"+inner+"</div>";
+			return outer;
+		}
+		//Sector markers showMapWithSectors
+		this.sectorMarkers=function(id,arg){
+			sectorMarkersShow=true;
 			var inner=this.html(id,arg);
 			var outer="<div id='marker"+id+"' class='infoWindow'>"+inner+"</div>";
 			return outer;
 		}
 		//Window update
 		this.update=function(id,arg){
-			info=arg;
+			sectorMarkersShow=false;
 			var inner=this.html(id,arg);
 			document.getElementById("marker"+id).innerHTML=inner;
 		}
 		//User infoWindow update
 		this.userUpdate=function(id,visited,captured){
+			sectorMarkersShow=false;
 			var element=document.getElementById("marker"+id);
 			element.getElementsByClassName("infoWindowCheckBox")[0].checked=visited;
 			element.getElementsByClassName("infoWindowCheckBox")[1].checked=captured;
@@ -421,11 +451,10 @@ angular.module('mapModule')
 	})
 	
 	/* Map service */
-	.service('mapService',function(mapCan,model,infoWindow,$http,modelContent,sectorService){
+	.service('mapService',function(mapCan,model,infoWindow,$http,modelContent,sectorService,settings){
 		//Max marker 'Id'
 		var maxId=0;
-		info=maxId;
-		
+				
 		//Show map with sectors
 		this.showMapWithSectors=function(){
 			//Create map sectors
@@ -436,7 +465,12 @@ angular.module('mapModule')
 		this.readSector=function(sectorName){
 			console.info("Read map...");
 			//Read from DB
-			$http.get("backEnd/marker.php/markers/sector/'"+sectorName+"'").success(function(data){
+			var request="";
+			if (settings.identified==="admin")
+				request="backEnd/marker.php/markers/sector/'"+sectorName+"'";//Admin
+			else
+				request="backEnd/marker.php/users/"+settings.userMail+"?sector="+sectorName;//User
+			$http.get(request).success(function(data){
 				console.info("Read map success");
 				model.clearCollection();
 				//Last section model clears
@@ -466,7 +500,6 @@ angular.module('mapModule')
 				$http.get("backEnd/marker.php/markers/lastId").success(function(data){
 					console.info("Read last saved marker success");
 					maxId=+data[0].id;
-					console.log("maxId=",maxId);
 				})
 				.error(function(){
 					console.error("Read last saved marker error");
@@ -493,10 +526,6 @@ angular.module('mapModule')
 					return this.id;
 				}
 				//Add new marker to MODEL
-				/*var position={
-					lat: marker.postion.lat,
-					lng: marker.position.lng
-				};*/
 				model.addMarker(marker,{"sector":res.sectorMarker.marker.label});
 				//Marker event
 				//N.B.
@@ -511,9 +540,16 @@ angular.module('mapModule')
 				var markerId=this.getId();//Get marker 'id'
 				var obj=model.getterObj(markerId);
 				var msg=infoWindow.create(obj.marker.id,obj.content);
-				new google.maps.InfoWindow({
+				var window=new google.maps.InfoWindow({
 					content: msg
-				}).open(map,this);
+				});
+				window.open(map,this);
+				//Event occurs when the <div> containing the infoWindow`s content is attached to the DOM
+				google.maps.event.addListener(window,'domready',function(){
+					if (settings.identified==="user")
+					//Set 'visited' and 'captured' on the infoWindow
+					infoWindow.userUpdate(obj.marker.id,obj.content.isVisited,obj.content.isCaptured);
+				});
 			});
 		}
 	
