@@ -191,7 +191,6 @@ angular.module('mapModule')
 			addLoadedMarker: function(marker,contentObj){
 				var obj=new Obj(marker,contentObj);
 				collection.push(obj);
-				console.log(collection);
 			},
 			
 			//Marker change
@@ -243,6 +242,7 @@ angular.module('mapModule')
 				collection.splice(j,1);
 				dataBaseService.userMarkerRemove(settings.userMail,id);
 			}
+			
 		}
 		
 		function searchJ(id){

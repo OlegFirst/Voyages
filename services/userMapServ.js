@@ -40,7 +40,12 @@ angular.module('userMapModule')
 							//inner+="<p><button onclick='getNewMarker("+markerId+")'>Get marker</button></p>";
 							inner+="<p>Right click on marker to get it</p>";
 							var outer="<div id='marker"+markerId+"' class='infoWindow'>"+inner+"</div>";
-							marker.content=outer;							
+							marker.content=outer;
+							marker.contentCopy={
+								name: content.name,
+								sector: content.sector,
+								id: markerId
+							}
 							//Info window
 							marker.addListener("click",function(){
 								var msg=this.content;
@@ -50,9 +55,8 @@ angular.module('userMapModule')
 							});
 							//Get marker event
 							marker.addListener("rightclick",function(){
-								console.log(this);
 								this.setMap(null);
-								getNewMarker(this.id);
+								getNewMarker(this);
 							});
 							if (res.msg!=="New markers is being shown")
 								res.msg="New markers is being shown";

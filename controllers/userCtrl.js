@@ -2,7 +2,7 @@
 
 
 angular.module('userModule')
-	.controller('userController',function($scope,sectorService,sectorEvents,settings,pointList,model,infoWindow,userService,dataBaseService){
+	.controller('userController',function($scope,sectorService,sectorEvents,settings,pointList,model,infoWindow,mapService,userService,dataBaseService){
 		
 		//User start
 		if (settings.identified!=='user'){
@@ -91,14 +91,55 @@ angular.module('userModule')
 		
 		//Get new marker and add it to user
 		$scope.getNewMarker=function(){
+			//Save to DB
 			var obj={
 				mail: settings.userMail,
-				id: userMarkerId,
+				id: selectedMarker.id,
+				isVisited: false,
+				isCaptured: false
+			};
+			dataBaseService.userMarkerGet(obj);
+			//Set this marker on map
+			var location={
+				lat: selectedMarker.position.lat(),
+				lng: selectedMarker.position.lng()
+			};
+			var marker=new google.maps.Marker({
+				position: location,
+				map: map,
+				id: selectedMarker.id
+			});
+			marker.__proto__.getId=function(){
+				return this.id;
+			}
+			//Insert this marker to MODEL
+			var contentRes={
+				name: selectedMarker.contentCopy.name,
+				sector: selectedMarker.contentCopy.sector,
 				isVisited: false,
 				isCaptured: false
 			}
-			//Save to DB
-			dataBaseService.userMarkerGet(obj);
+			model.addLoadedMarker(marker,contentRes);
+			//Marker event
+			markerEvent(marker);
+		}
+		//Marker event
+		function markerEvent(marker){
+			marker.addListener("click",function(){
+				var markerId=this.getId();//Get marker 'id'
+				var obj=model.getterObj(markerId);
+				var msg=infoWindow.create(obj.marker.id,obj.content);
+				var window=new google.maps.InfoWindow({
+					content: msg
+				});
+				window.open(map,this);
+				//Event occurs when the <div> containing the infoWindow`s content is attached to the DOM
+				google.maps.event.addListener(window,'domready',function(){
+					if (settings.identified==="user")
+					//Set 'visited' and 'captured' on the infoWindow
+					infoWindow.userUpdate(obj.marker.id,obj.content.isVisited,obj.content.isCaptured);
+				});
+			});
 		}
 	
 	});

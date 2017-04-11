@@ -114,8 +114,6 @@ angular.module('dataBaseModule')
 			var contentSend=angular.toJson(obj);
 			$http.post("backEnd/marker.php/users",contentSend).success(function(data){
 				console.log("Save to DB success");
-				//Remove selected new marker from the map
-				
 			})
 			.error(function(data){
 				console.error("Save to DB error");
