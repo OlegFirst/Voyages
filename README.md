@@ -1,2 +1,2 @@
 # Voyages
-This project let to have a trip in interesting places in Ukraine.
+This project let to have a trip at interesting places in Ukraine.
